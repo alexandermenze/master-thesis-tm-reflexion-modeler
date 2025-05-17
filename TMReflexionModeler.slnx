@@ -8,6 +8,11 @@
   <Folder Name="/3_SourceModelExtraction/">
     <Project Path="src/TMReflexionModeler.CodeQLSourceExtract/TMReflexionModeler.CodeQLSourceExtract.csproj" />
   </Folder>
+  <Folder Name="/4_ReflexionModeling/">
+    <Project Path="src/TMReflexionModeler.ReflexionModel.Core/TMReflexionModeler.ReflexionModel.Core.csproj" />
+    <Project Path="src/TMReflexionModeler.ReflexionModel.Csv/TMReflexionModeler.ReflexionModel.Csv.csproj" />
+    <Project Path="src/TMReflexionModeler.ReflexionModel/TMReflexionModeler.ReflexionModel.csproj" />
+  </Folder>
   <Folder Name="/Tool/">
     <Project Path="src/TMReflexionModeler.Tool/TMReflexionModeler.Tool.csproj" />
   </Folder>

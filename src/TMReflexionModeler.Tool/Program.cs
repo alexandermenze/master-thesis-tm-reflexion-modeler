@@ -72,7 +72,7 @@ rootCommand.Handler = CommandHandler.Create<string, string?, string, string?, st
         if (string.IsNullOrWhiteSpace(excludedExternalCallsFile) is false)
             Console.WriteLine($"Source Code Directory: {sourceDir}");
 
-        return new ReflexionModelOrchestrator().Run(
+        return ReflexionModelOrchestrator.Run(
             tdmFile,
             tdd,
             sourceDir,

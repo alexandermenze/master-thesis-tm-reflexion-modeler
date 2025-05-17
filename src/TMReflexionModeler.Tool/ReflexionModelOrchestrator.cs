@@ -1,12 +1,13 @@
 using TMReflexionModeler.CodeQLSourceExtract;
+using TMReflexionModeler.ReflexionModel;
 using TMReflexionModeler.SolutionManipulation;
 using TMReflexionModeler.ThreatDragonExtract;
 
 namespace TMReflexionModeler.Tool;
 
-public class ReflexionModelOrchestrator
+public static class ReflexionModelOrchestrator
 {
-    public async Task<int> Run(
+    public static async Task<int> Run(
         string threatDragonModelFile,
         string? threatDragonDiagramName,
         string sourceDir,
@@ -31,6 +32,10 @@ public class ReflexionModelOrchestrator
             sourceDir,
             excludedExternalCallsFile
         );
+
+        var rmPath = ReflexionModeler.Execute(workDir.FullName, hlmPath, smPath);
+
+        Console.WriteLine($"Reflexion model generated at: {rmPath}");
 
         return 0;
     }
