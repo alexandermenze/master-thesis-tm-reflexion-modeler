@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/1_Extract/">
+    <Project Path="src/TMReflexionModeler.ThreatDragonExtract/TMReflexionModeler.ThreatDragonExtract.csproj" />
+  </Folder>
+  <Folder Name="/Tool/">
+    <Project Path="src/TMReflexionModeler.Tool/TMReflexionModeler.Tool.csproj" />
+  </Folder>
+</Solution>
