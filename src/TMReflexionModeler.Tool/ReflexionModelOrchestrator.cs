@@ -74,19 +74,24 @@ public static class ReflexionModelOrchestrator
     private static async Task<T> RunStageAsync<T>(string stageName, Func<Task<T>> action)
     {
         var sw = Stopwatch.StartNew();
-        Console.WriteLine($"Stage '{stageName}' started.");
+        Console.WriteLine();
+        Console.WriteLine($" === Stage '{stageName}' started ===");
+        Console.WriteLine();
         try
         {
             var result = await action();
             sw.Stop();
-            Console.WriteLine($"Stage '{stageName}' completed in {sw.ElapsedMilliseconds}ms.");
+            Console.WriteLine(
+                $" === Stage '{stageName}' completed in {sw.ElapsedMilliseconds}ms ==="
+            );
+            Console.WriteLine();
             return result;
         }
         catch (Exception ex)
         {
             sw.Stop();
             await Console.Error.WriteLineAsync(
-                $"Stage '{stageName}' failed after {sw.ElapsedMilliseconds}ms: {ex}"
+                $" === Stage '{stageName}' failed after {sw.ElapsedMilliseconds}ms: {ex} ==="
             );
             throw;
         }
