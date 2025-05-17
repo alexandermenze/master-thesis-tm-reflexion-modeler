@@ -7,14 +7,21 @@ namespace TMReflexionModeler.ThreatDragonExtract;
 
 public static class ThreatDragonFormatConverter
 {
-    public static void Convert(string inputPath, string outputPath, string diagramTitle = "")
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
-        var jsonText = File.ReadAllText(inputPath);
+        PropertyNameCaseInsensitive = true,
+    };
+
+    public static async Task Convert(
+        string inputPath,
+        string outputPath,
+        string? diagramTitle = null
+    )
+    {
+        var jsonText = await File.ReadAllTextAsync(inputPath);
         var model =
-            JsonSerializer.Deserialize<ThreatModel>(
-                jsonText,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            ) ?? throw new InvalidOperationException("Failed to deserialize JSON");
+            JsonSerializer.Deserialize<ThreatModel>(jsonText, JsonSerializerOptions)
+            ?? throw new InvalidOperationException("Failed to deserialize JSON");
 
         var diagrams = model.Detail.Diagrams;
 
@@ -72,7 +79,7 @@ public static class ThreatDragonFormatConverter
                 sb.AppendLine(Row(targetComponent, f, sourceComponent));
         }
 
-        File.WriteAllText(outputPath, sb.ToString());
+        await File.WriteAllTextAsync(outputPath, sb.ToString());
     }
 
     private static string Row(Component c, Flow f, Component t) =>
