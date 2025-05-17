@@ -20,4 +20,9 @@
     <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TMReflexionModeler.SolutionManipulation\TMReflexionModeler.SolutionManipulation.csproj" />
+    <ProjectReference Include="..\TMReflexionModeler.ThreatDragonExtract\TMReflexionModeler.ThreatDragonExtract.csproj" />
+  </ItemGroup>
+
 </Project>
