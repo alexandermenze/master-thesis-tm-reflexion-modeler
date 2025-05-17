@@ -56,7 +56,7 @@ public static class ReflexionModelOrchestrator
             );
 
             // Stage 4: Execute Reflexion Modeling
-            var rmPath = RunStageAsync(
+            var rmPath = await RunStageAsync(
                 "Execute Reflexion Modeling",
                 () => Task.Run(() => ReflexionModeler.Execute(workDir.FullName, hlmPath, smPath))
             );
