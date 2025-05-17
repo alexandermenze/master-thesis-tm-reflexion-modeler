@@ -55,30 +55,30 @@ rootCommand.Description =
     "TMReflexionModeler: Generate a reflexion model from a Threat Dragon model and a C# solution using CodeQL";
 
 rootCommand.Handler = CommandHandler.Create<string, string?, string, string?, string, string?>(
-    (tdmFile, tdd, sourceDir, excludeDirs, slnFile, excludedExternalCallsFile) =>
+    (tdmf, tdd, sourceDir, excludeDirs, sln, excludeCallsFile) =>
     {
-        Console.WriteLine($"Threat Dragon Model File: {tdmFile}");
+        Console.WriteLine($"Threat Dragon Model File: {tdmf}");
 
         if (string.IsNullOrEmpty(tdd) is false)
             Console.WriteLine($"Diagram Name: {tdd}");
 
-        Console.WriteLine($"Solution File: {slnFile}");
+        Console.WriteLine($"Solution File: {sln}");
 
         if (string.IsNullOrEmpty(excludeDirs) is false)
             Console.WriteLine($"Excluded Directories: {excludeDirs}");
 
         Console.WriteLine($"Source Code Directory: {sourceDir}");
 
-        if (string.IsNullOrWhiteSpace(excludedExternalCallsFile) is false)
+        if (string.IsNullOrWhiteSpace(excludeCallsFile) is false)
             Console.WriteLine($"Source Code Directory: {sourceDir}");
 
         return ReflexionModelOrchestrator.Run(
-            tdmFile,
+            tdmf,
             tdd,
             sourceDir,
             excludeDirs,
-            slnFile,
-            excludedExternalCallsFile
+            sln,
+            excludeCallsFile
         );
     }
 );
