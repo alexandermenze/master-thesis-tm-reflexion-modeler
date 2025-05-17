@@ -70,7 +70,7 @@ rootCommand.Handler = CommandHandler.Create<string, string?, string, string?, st
         Console.WriteLine($"Source Code Directory: {sourceDir}");
 
         if (string.IsNullOrWhiteSpace(excludeCallsFile) is false)
-            Console.WriteLine($"Source Code Directory: {sourceDir}");
+            Console.WriteLine($"Excluded Calls File: {excludeCallsFile}");
 
         return ReflexionModelOrchestrator.Run(
             tdmf,
