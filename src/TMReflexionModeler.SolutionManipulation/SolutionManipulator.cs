@@ -4,7 +4,7 @@ namespace TMReflexionModeler.SolutionManipulation;
 
 public static class SolutionManipulator
 {
-    public static async Task RemoveProjects(string solutionFilePath, string excludeDirs)
+    public static async Task<string> RemoveProjects(string solutionFilePath, string excludeDirs)
     {
         var dirs = excludeDirs.Split(';', StringSplitOptions.RemoveEmptyEntries);
 
@@ -67,5 +67,7 @@ public static class SolutionManipulator
 
             Console.WriteLine();
         }
+        
+        return solutionFilePath;
     }
 }
