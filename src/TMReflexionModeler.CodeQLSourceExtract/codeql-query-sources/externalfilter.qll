@@ -1,0 +1,14 @@
+module ExternalFilter {
+  import csharp
+
+  private predicate methodFilter(string namespace, string type, string name) { none() }
+
+  predicate isFilteredMethod(Method m) {
+    exists(string namespace, string type, string name |
+      methodFilter(namespace, type, name) and
+      m.getDeclaringType().getNamespace().getFullName().matches(namespace) and
+      m.getDeclaringType().getName().matches(type) and
+      m.getName().matches(name)
+    )
+  }
+}

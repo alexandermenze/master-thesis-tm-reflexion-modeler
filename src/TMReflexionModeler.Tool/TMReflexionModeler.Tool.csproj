@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TMReflexionModeler.CodeQLSourceExtract\TMReflexionModeler.CodeQLSourceExtract.csproj" />
     <ProjectReference Include="..\TMReflexionModeler.SolutionManipulation\TMReflexionModeler.SolutionManipulation.csproj" />
     <ProjectReference Include="..\TMReflexionModeler.ThreatDragonExtract\TMReflexionModeler.ThreatDragonExtract.csproj" />
   </ItemGroup>

@@ -1,3 +1,4 @@
+using TMReflexionModeler.CodeQLSourceExtract;
 using TMReflexionModeler.SolutionManipulation;
 using TMReflexionModeler.ThreatDragonExtract;
 
@@ -16,7 +17,7 @@ public class ReflexionModelOrchestrator
     {
         var workDir = Directory.CreateDirectory("tm-rm-work");
 
-        var tdOutPath = await ExtractThreatModel(
+        var hlmPath = await ExtractThreatModel(
             workDir.FullName,
             threatDragonModelFile,
             threatDragonDiagramName
@@ -24,6 +25,12 @@ public class ReflexionModelOrchestrator
 
         if (excludeDirs is not null)
             await SolutionManipulator.RemoveProjects(solutionFile, excludeDirs);
+
+        var smPath = await CodeQLSourceExtractor.Extract(
+            workDir.FullName,
+            sourceDir,
+            excludedExternalCallsFile
+        );
 
         return 0;
     }

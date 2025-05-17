@@ -1,9 +1,12 @@
 <Solution>
-  <Folder Name="/1_Extract/">
+  <Folder Name="/1_HighLevelModelExtraction/">
     <Project Path="src/TMReflexionModeler.ThreatDragonExtract/TMReflexionModeler.ThreatDragonExtract.csproj" />
   </Folder>
   <Folder Name="/2_FilterSolutionProjects/">
     <Project Path="src/TMReflexionModeler.SolutionManipulation/TMReflexionModeler.SolutionManipulation.csproj" />
+  </Folder>
+  <Folder Name="/3_SourceModelExtraction/">
+    <Project Path="src/TMReflexionModeler.CodeQLSourceExtract/TMReflexionModeler.CodeQLSourceExtract.csproj" />
   </Folder>
   <Folder Name="/Tool/">
     <Project Path="src/TMReflexionModeler.Tool/TMReflexionModeler.Tool.csproj" />

@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="codeql-query-sources\callgraph.qll" />
+    <Content Include="codeql-query-sources\callgraph.qll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\callpoints.qll" />
+    <Content Include="codeql-query-sources\callpoints.qll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\externalfilter.qll" />
+    <Content Include="codeql-query-sources\externalfilter.qll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\identify-call-paths-with-tags.ql" />
+    <Content Include="codeql-query-sources\identify-call-paths-with-tags.ql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\mappings.qll" />
+    <Content Include="codeql-query-sources\mappings.qll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\qlpack.yml" />
+    <Content Include="codeql-query-sources\qlpack.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="codeql-query-sources\empty.txt" />
+    <Content Include="codeql-query-sources\empty.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
