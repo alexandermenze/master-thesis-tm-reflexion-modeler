@@ -1,7 +1,7 @@
 module ExternalFilter {
   import csharp
 
-  private predicate methodFilter(string namespace, string type, string name) { none() }
+  external private predicate methodFilter(string namespace, string type, string name);
 
   predicate isFilteredMethod(Method m) {
     exists(string namespace, string type, string name |
