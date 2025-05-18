@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/0_Taint/">
+    <Project Path="src/TMReflexionModeler.Taint/TMReflexionModeler.Taint.csproj" />
+  </Folder>
   <Folder Name="/1_HighLevelModelExtraction/">
     <Project Path="src/TMReflexionModeler.ThreatDragonExtract/TMReflexionModeler.ThreatDragonExtract.csproj" />
   </Folder>

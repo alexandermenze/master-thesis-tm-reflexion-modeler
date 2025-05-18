@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>TMReflexionModeler.Taint</PackageId>
+    <Version>0.0.8</Version>
+    <Authors>Alexander Menze</Authors>
+    <Description>Taint helpers for Reflexion Modeling for .NET source code</Description>
+    <PackageTags>dotnet</PackageTags>
+    <RepositoryUrl>https://github.com/alexandermenze/tm-reflexion-modeler</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>
