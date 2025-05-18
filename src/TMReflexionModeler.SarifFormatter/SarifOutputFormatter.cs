@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -36,51 +35,103 @@ public static class SarifOutputFormatter
                 : "warning";
 
             var locs = (rec.Locations ?? [])
-                .Select(loc => new Dictionary<string, object>
+                .Select(loc =>
+                    CreateLocationEntry(
+                        loc.FilePath,
+                        loc.StartLine,
+                        loc.StartColumn,
+                        loc.EndLine,
+                        loc.EndColumn
+                    )
+                )
+                .ToList();
+
+            // If Absence has no physical location, add a placeholder or relatedLocation
+            if (
+                rec.Category.Equals("Absence", StringComparison.OrdinalIgnoreCase)
+                && locs.Count is 0
+            )
+            {
+                locs.Add(
+                    new Dictionary<string, object>
+                    {
+                        ["physicalLocation"] = new Dictionary<string, object>
+                        {
+                            ["artifactLocation"] = new Dictionary<string, object>
+                            {
+                                ["uri"] = rec.HlmMatches.Split(
+                                    '|',
+                                    StringSplitOptions.RemoveEmptyEntries
+                                )[0],
+                            },
+                        },
+                    }
+                );
+            }
+
+            // Split hlmMatches and smMatches into additional relatedLocations
+            var related = SplitMatches(rec.HlmMatches)
+                .Concat(SplitMatches(rec.SmMatches))
+                .Select(match => new Dictionary<string, object>
                 {
                     ["physicalLocation"] = new Dictionary<string, object>
                     {
-                        ["artifactLocation"] = new Dictionary<string, object>
-                        {
-                            ["uri"] = loc.FilePath,
-                        },
-                        ["region"] = new Dictionary<string, object>
-                        {
-                            ["startLine"] = loc.StartLine,
-                            ["startColumn"] = loc.StartColumn,
-                            ["endLine"] = loc.EndLine,
-                            ["endColumn"] = loc.EndColumn,
-                        },
+                        ["artifactLocation"] = new Dictionary<string, object> { ["uri"] = match },
                     },
                 })
-                .ToImmutableArray();
+                .ToList();
 
             var result = new Dictionary<string, object>
             {
                 ["ruleId"] = rec.Category,
                 ["level"] = level,
                 ["message"] = new Dictionary<string, object> { ["text"] = rec.Category },
+                ["locations"] = locs,
             };
 
-            if (locs.Length > 0)
-                result["locations"] = locs;
-
-            var props = new Dictionary<string, object>();
-
-            if (!string.IsNullOrEmpty(rec.HlmMatches))
-                props["hlmMatches"] = rec.HlmMatches;
-
-            if (!string.IsNullOrEmpty(rec.SmMatches))
-                props["smMatches"] = rec.SmMatches;
-
-            if (props.Count > 0)
-                result["properties"] = props;
+            if (related.Count > 0)
+                result["relatedLocations"] = related;
 
             results.Add(result);
         }
 
         var outputPath = Path.Combine(workDir, "reflexion-model.sarif");
         return await WriteResults(outputPath, results);
+    }
+
+    private static Dictionary<string, object> CreateLocationEntry(
+        string uri,
+        int startLine,
+        int startColumn,
+        int endLine,
+        int endColumn
+    )
+    {
+        return new Dictionary<string, object>
+        {
+            ["physicalLocation"] = new Dictionary<string, object>
+            {
+                ["artifactLocation"] = new Dictionary<string, object> { ["uri"] = uri },
+                ["region"] = new Dictionary<string, object>
+                {
+                    ["startLine"] = startLine,
+                    ["startColumn"] = startColumn,
+                    ["endLine"] = endLine,
+                    ["endColumn"] = endColumn,
+                },
+            },
+        };
+    }
+
+    private static IEnumerable<string> SplitMatches(string matches)
+    {
+        if (string.IsNullOrWhiteSpace(matches))
+            yield break;
+
+        foreach (var part in matches.Split('|', StringSplitOptions.RemoveEmptyEntries))
+        {
+            yield return part.Trim();
+        }
     }
 
     private static async Task<string> WriteResults(
