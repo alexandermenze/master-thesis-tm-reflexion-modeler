@@ -14,13 +14,6 @@ query predicate isSource(Callable c) { c instanceof CallPoints::InboundCallPoint
 
 query predicate isSink(Callable c) { c instanceof CallPoints::OutboundCallPoint }
 
-query predicate edgesWithCall(Callable source, Callable sink, Call c) {
-  c.getARuntimeTarget() = sink and
-  c.getEnclosingCallable() = source
-  or
-  exists(ConstructedGeneric cg | cg.getUnboundGeneric() = sink and edgesWithCall(source, cg, c))
-}
-
 string findDataflowName(Callable source, Method sink) {
   result =
     concat(Callable between, Method tagMethod, Call c |
@@ -47,8 +40,11 @@ string findDataflowMethodNameOrEmpty(Callable source, Method sink) {
 }
 
 from
-  Callable source, Method sinkCaller, Method sink, string processName, string dataflowName,
-  string dataflowMethodName
+  Callable source, Method sinkCaller, Method sink, string processname, string dataflowname,
+  string dataflowmethodname, string internalcallfilepath, int internalcallstartline,
+  int internalcallstartcolumn, int internalcallendline, int internalcallendcolumn,
+  string processfilepath, int processstartline, int processstartcolumn, int processendline,
+  int processendcolumn
 where
   not ExternalFilter::isFilteredMethod(sink) and
   not Mappings::isDataflowTagMethod(source) and
@@ -65,8 +61,18 @@ where
   CallGraph::edgesWithoutTag+(source, sink) and
   CallGraph::edgesWithoutTag*(source, sinkCaller) and
   CallGraph::isClosestMethod(sinkCaller, sink) and
-  processName = Mappings::getProcessNameOrEmpty(source) and
-  dataflowName = findDataflowName(source, sink) and
-  dataflowMethodName = findDataflowMethodNameOrEmpty(source, sink)
-select source.getFullyQualifiedNameDebug() as entrypoint, sinkCaller.getFullyQualifiedNameDebug() as internalcall,
-  sink.getFullyQualifiedNameDebug() as externalcall, processName, dataflowName, dataflowMethodName
+  processname = Mappings::getProcessNameOrEmpty(source) and
+  dataflowname = findDataflowName(source, sink) and
+  dataflowmethodname = findDataflowMethodNameOrEmpty(source, sink) and
+  sinkCaller
+      .hasLocationInfo(internalcallfilepath, internalcallstartline, internalcallstartcolumn,
+        internalcallendline, internalcallendcolumn) and
+  source
+      .getLocation()
+      .hasLocationInfo(processfilepath, processstartline, processstartcolumn, processendline,
+        processendcolumn)
+select source.getFullyQualifiedNameDebug() as entrypoint,
+  sinkCaller.getFullyQualifiedNameDebug() as internalcall,
+  sink.getFullyQualifiedNameDebug() as externalcall, processname, dataflowname, dataflowmethodname,
+  internalcallfilepath, internalcallstartline, internalcallstartcolumn, internalcallendline,
+  internalcallendcolumn, processfilepath, processstartline, processstartcolumn, processendline, processendcolumn
