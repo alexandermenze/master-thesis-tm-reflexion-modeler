@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
 using TMReflexionModeler.ReflexionModel.Core.Models;
@@ -61,6 +62,22 @@ public class CsvReaderService : ICsvReaderService
         var smList = rawRecords
             .SelectMany(r =>
             {
+                var entryPointLocation = new Location(
+                    r.ProcessFilePath,
+                    r.ProcessStartLine,
+                    r.ProcessStartColumn,
+                    r.ProcessEndLine,
+                    r.ProcessEndColumn
+                );
+
+                var internalCallLocation = new Location(
+                    r.InternalCallFilePath,
+                    r.InternalCallStartLine,
+                    r.InternalCallStartColumn,
+                    r.InternalCallEndLine,
+                    r.InternalCallEndColumn
+                );
+
                 if (string.IsNullOrWhiteSpace(r.RawDataflowNames))
                     return
                     [
@@ -70,7 +87,9 @@ public class CsvReaderService : ICsvReaderService
                             ExternalCall: r.ExternalCall.Trim(),
                             ProcessName: r.ProcessName.Trim(),
                             DataflowName: "",
-                            Direction: DataflowDirection.Unknown
+                            Direction: DataflowDirection.Unknown,
+                            entryPointLocation,
+                            internalCallLocation
                         ),
                     ];
 
@@ -92,7 +111,9 @@ public class CsvReaderService : ICsvReaderService
                             ExternalCall: r.ExternalCall.Trim(),
                             ProcessName: r.ProcessName.Trim(),
                             DataflowName: df,
-                            Direction: direction
+                            Direction: direction,
+                            entryPointLocation,
+                            internalCallLocation
                         )
                 );
             })
@@ -112,10 +133,13 @@ public class CsvReaderService : ICsvReaderService
         csv.WriteField("Details");
         csv.WriteField("HlmMatches");
         csv.WriteField("SmMatches");
+        csv.WriteField("Locations");
         csv.NextRecord();
 
         foreach (var e in entries)
         {
+            var isProcess = e.EntityType.Equals("Process", StringComparison.OrdinalIgnoreCase);
+
             var details = string.Join("|", e.Details);
             var hlmMatches = string.Join(
                 "|",
@@ -136,6 +160,15 @@ public class CsvReaderService : ICsvReaderService
             csv.WriteField(details);
             csv.WriteField(hlmMatches);
             csv.WriteField(smMatches);
+            csv.WriteField(
+                JsonSerializer.Serialize(
+                    e.SmMatches.Select(s =>
+                            isProcess ? s.EntryPointLocation : s.InternalCallLocation
+                        )
+                        .Distinct()
+                        .ToImmutableArray()
+                )
+            );
             csv.NextRecord();
         }
         writer.Flush();

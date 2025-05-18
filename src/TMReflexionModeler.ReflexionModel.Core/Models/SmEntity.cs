@@ -6,5 +6,7 @@ public record SmEntity(
     string ExternalCall,
     string ProcessName,
     string DataflowName,
-    DataflowDirection Direction
+    DataflowDirection Direction,
+    Location EntryPointLocation,
+    Location InternalCallLocation
 );
