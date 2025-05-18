@@ -12,13 +12,13 @@ module Mappings {
   private string getProcessName(Callable source) {
     exists(Attribute a |
       a.getTarget() = source and
-      a.getType().getName() = "ThreatModelProcessAttribute"
+      a.getType().hasFullyQualifiedName("TMReflexionModeler.Taint", "ThreatModelProcessAttribute")
     |
       result = a.getConstructorArgument(0).getValue()
     )
   }
 
   predicate isDataflowTagMethod(Callable c) {
-    c.getDeclaringType().hasFullyQualifiedName("ThreatModel.Tags", "Dataflow")
+    c.getDeclaringType().hasFullyQualifiedName("TMReflexionModeler.Taint", "Dataflow")
   }
 }
