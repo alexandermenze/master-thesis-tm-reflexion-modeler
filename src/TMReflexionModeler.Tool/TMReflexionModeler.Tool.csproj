@@ -11,8 +11,9 @@
     <PackageId>TMReflexionModeler.Tool</PackageId>
     <Version>0.0.1</Version>
     <Authors>Alexander Menze</Authors>
-    <Description>Reflexion modeling for .NET applications with Threat Dragon support</Description>
+    <Description>Reflexion modeling for .NET source code with Threat Dragon support</Description>
     <PackageTags>cli;tool;dotnet</PackageTags>
+    <RepositoryUrl>https://github.com/alexandermenze/tm-reflexion-modeler</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
