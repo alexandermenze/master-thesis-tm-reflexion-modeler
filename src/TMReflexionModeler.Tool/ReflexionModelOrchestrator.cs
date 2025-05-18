@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using TMReflexionModeler.CodeQLSourceExtract;
 using TMReflexionModeler.ReflexionModel;
+using TMReflexionModeler.SarifFormatter;
 using TMReflexionModeler.SolutionManipulation;
 using TMReflexionModeler.ThreatDragonExtract;
 
@@ -61,7 +62,14 @@ public static class ReflexionModelOrchestrator
                 () => Task.Run(() => ReflexionModeler.Execute(workDir.FullName, hlmPath, smPath))
             );
 
-            Console.WriteLine($"Reflexion model generated at: {rmPath}");
+            // Stage 5: Convert to SARIF
+            var rmSarifPath = await RunStageAsync(
+                "Convert to SARIF",
+                () => SarifOutputFormatter.ConvertToSarif(workDir.FullName, rmPath)
+            );
+
+            Console.WriteLine($"Reflexion model csv generated at: {rmPath}");
+            Console.WriteLine($"Reflexion model sarif generated at: {rmSarifPath}");
             return 0;
         }
         catch (Exception ex)

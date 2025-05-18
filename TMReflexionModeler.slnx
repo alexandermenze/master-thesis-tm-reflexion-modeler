@@ -13,6 +13,9 @@
     <Project Path="src/TMReflexionModeler.ReflexionModel.Csv/TMReflexionModeler.ReflexionModel.Csv.csproj" />
     <Project Path="src/TMReflexionModeler.ReflexionModel/TMReflexionModeler.ReflexionModel.csproj" />
   </Folder>
+  <Folder Name="/5_SarifOutput/">
+    <Project Path="src/TMReflexionModeler.SarifFormatter/TMReflexionModeler.SarifFormatter.csproj" />
+  </Folder>
   <Folder Name="/Tool/">
     <Project Path="src/TMReflexionModeler.Tool/TMReflexionModeler.Tool.csproj" />
   </Folder>
