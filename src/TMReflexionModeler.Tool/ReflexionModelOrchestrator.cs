@@ -22,6 +22,8 @@ public static class ReflexionModelOrchestrator
         {
             Console.WriteLine("Starting ReflexionModelOrchestrator...");
 
+            var pwd = Directory.GetCurrentDirectory();
+
             var workDir = Directory.CreateDirectory("tm-rm-work");
             Console.WriteLine($"Work directory created: {workDir}");
 
@@ -65,7 +67,7 @@ public static class ReflexionModelOrchestrator
             // Stage 5: Convert to SARIF
             var rmSarifPath = await RunStageAsync(
                 "Convert to SARIF",
-                () => SarifOutputFormatter.ConvertToSarif(workDir.FullName, rmPath)
+                () => SarifOutputFormatter.ConvertToSarif(workDir.FullName, rmPath, pwd, hlmPath)
             );
 
             Console.WriteLine($"Reflexion model csv generated at: {rmPath}");
