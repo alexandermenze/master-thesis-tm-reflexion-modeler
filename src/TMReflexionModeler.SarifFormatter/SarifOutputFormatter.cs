@@ -61,10 +61,6 @@ public static class SarifOutputFormatter
                 locs.Add(
                     new Dictionary<string, object>
                     {
-                        ["message"] = new Dictionary<string, object>
-                        {
-                            ["text"] = MakeMessage(rec),
-                        },
                         ["physicalLocation"] = new Dictionary<string, object>
                         {
                             ["artifactLocation"] = new Dictionary<string, object>
@@ -92,7 +88,7 @@ public static class SarifOutputFormatter
             {
                 ["ruleId"] = rec.Category,
                 ["level"] = level,
-                ["message"] = new Dictionary<string, object> { ["text"] = rec.Category },
+                ["message"] = new Dictionary<string, object> { ["text"] = MakeMessage(rec) },
                 ["locations"] = locs,
             };
 
@@ -212,9 +208,15 @@ public static class SarifOutputFormatter
         return $"""
             {rec.Category} for {rec.EntityType} {rec.EntityKey} detected.
 
-            High-Level Model Components are: {rec.HlmMatches}.
+            High-Level Model Components are: {string.Join(
+                Environment.NewLine,
+                rec.HlmMatches.Split('|', StringSplitOptions.RemoveEmptyEntries)
+            )}.
 
-            Source Model Components are: {rec.SmMatches}
+            Source Model Components are: {string.Join(
+                Environment.NewLine,
+                rec.SmMatches.Split('|', StringSplitOptions.RemoveEmptyEntries)
+            )}
             """;
     }
 
