@@ -12,7 +12,11 @@ module Mappings {
   private string getProcessName(Callable source) {
     exists(Attribute a |
       a.getTarget() = source and
-      a.getType().hasFullyQualifiedName("TMReflexionModeler.Taint", "ThreatModelProcessAttribute")
+      (
+        a.getType().hasFullyQualifiedName("TMReflexionModeler.Taint", "ThreatModelProcessAttribute") or
+        a.getType().hasFullyQualifiedName("TMReflexionModeler.Taint", "InboundDataflowAttribute") or
+        a.getType().hasFullyQualifiedName("TMReflexionModeler.Taint", "OutboundDataflowAttribute")
+      )
     |
       result = a.getConstructorArgument(0).getValue()
     )

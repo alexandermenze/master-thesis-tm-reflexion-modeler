@@ -9,7 +9,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tm-reflexion-modeler</ToolCommandName>
     <PackageId>TMReflexionModeler.Tool</PackageId>
-    <Version>0.0.10</Version>
+    <Version>0.0.11</Version>
     <Authors>Alexander Menze</Authors>
     <Description>Reflexion modeling for .NET source code with Threat Dragon support</Description>
     <PackageTags>cli;tool;dotnet</PackageTags>
