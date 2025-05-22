@@ -36,10 +36,9 @@ public static class SarifOutputFormatter
 
         foreach (var rec in records)
         {
-            var level = rec.Category.Equals("Convergence", StringComparison.OrdinalIgnoreCase)
-                ? "note"
-                : "warning";
-
+            if (rec.Category.Equals("Convergence", StringComparison.OrdinalIgnoreCase))
+                continue;
+            
             // Add physical locations
             var locs = (rec.Locations ?? [])
                 .Distinct()
@@ -87,7 +86,7 @@ public static class SarifOutputFormatter
             var result = new Dictionary<string, object>
             {
                 ["ruleId"] = rec.Category,
-                ["level"] = level,
+                ["level"] = "error",
                 ["message"] = new Dictionary<string, object> { ["text"] = MakeMessage(rec) },
                 ["locations"] = locs,
             };
