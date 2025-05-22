@@ -38,7 +38,7 @@ public static class SarifOutputFormatter
         {
             if (rec.Category.Equals("Convergence", StringComparison.OrdinalIgnoreCase))
                 continue;
-            
+
             // Add physical locations
             var locs = (rec.Locations ?? [])
                 .Distinct()
@@ -68,18 +68,6 @@ public static class SarifOutputFormatter
                             },
                         },
                     }
-                );
-
-            // Add logical locations from HLM and SM matches
-            var logicalLocations = SplitMatches(rec.HlmMatches)
-                .Concat(SplitMatches(rec.SmMatches))
-                .Distinct()
-                .Select(CreateLogicalLocationEntry)
-                .ToImmutableArray();
-
-            if (logicalLocations.IsEmpty is false)
-                locs.Add(
-                    new Dictionary<string, object> { { "logicalLocations", logicalLocations } }
                 );
 
             // Compose SARIF result
@@ -126,19 +114,6 @@ public static class SarifOutputFormatter
             },
         };
 
-    private static Dictionary<string, object> CreateLogicalLocationEntry(
-        string fullyQualifiedName
-    ) => new() { ["fullyQualifiedName"] = fullyQualifiedName };
-
-    private static IEnumerable<string> SplitMatches(string matches)
-    {
-        if (string.IsNullOrWhiteSpace(matches))
-            yield break;
-
-        foreach (var part in matches.Split('|', StringSplitOptions.RemoveEmptyEntries))
-            yield return part.Trim();
-    }
-
     private static async Task<string> WriteResults(
         string outputPath,
         IReadOnlyCollection<IDictionary<string, object>> results
@@ -167,6 +142,13 @@ public static class SarifOutputFormatter
                                     {
                                         ["text"] = "Divergence between HLM and SM",
                                     },
+                                    ["properties"] = new Dictionary<string, object>
+                                    {
+                                        ["problem"] = new Dictionary<string, object>
+                                        {
+                                            ["severity"] = "error",
+                                        },
+                                    },
                                 },
                                 new Dictionary<string, object>
                                 {
@@ -175,13 +157,12 @@ public static class SarifOutputFormatter
                                     {
                                         ["text"] = "Absence in SM",
                                     },
-                                },
-                                new Dictionary<string, object>
-                                {
-                                    ["id"] = "Convergence",
-                                    ["shortDescription"] = new Dictionary<string, object>
+                                    ["properties"] = new Dictionary<string, object>
                                     {
-                                        ["text"] = "Convergence between HLM and SM",
+                                        ["problem"] = new Dictionary<string, object>
+                                        {
+                                            ["severity"] = "error",
+                                        },
                                     },
                                 },
                             },
