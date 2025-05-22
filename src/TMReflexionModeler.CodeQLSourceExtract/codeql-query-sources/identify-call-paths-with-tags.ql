@@ -96,9 +96,12 @@ where
     internalcall = sinkCaller.getFullyQualifiedNameDebug() and
     externalcall = sink.getFullyQualifiedNameDebug() and
     sinkCaller
+        .getBody()
+        .getLocation()
         .hasLocationInfo(internalcallfilepath, internalcallstartline, internalcallstartcolumn,
           internalcallendline, internalcallendcolumn) and
     source
+        .getBody()
         .getLocation()
         .hasLocationInfo(processfilepath, processstartline, processstartcolumn, processendline,
           processendcolumn)
@@ -112,10 +115,12 @@ where
   dataflowname = findProcessDataflowName(source) and
   dataflowmethodname = findProcessDataflowMethodName(source) and
   source
+      .getBody()
       .getLocation()
       .hasLocationInfo(processfilepath, processstartline, processstartcolumn, processendline,
         processendcolumn) and
   source
+      .getBody()
       .getLocation()
       .hasLocationInfo(internalcallfilepath, internalcallstartline, internalcallstartcolumn,
         internalcallendline, internalcallendcolumn)
