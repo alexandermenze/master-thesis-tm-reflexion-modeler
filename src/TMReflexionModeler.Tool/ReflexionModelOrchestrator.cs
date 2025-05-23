@@ -65,14 +65,16 @@ public static class ReflexionModelOrchestrator
             );
 
             // Stage 5: Convert to SARIF
-            var rmSarifPath = await RunStageAsync(
+            var rmSarifOutcome = await RunStageAsync(
                 "Convert to SARIF",
                 () => SarifOutputFormatter.ConvertToSarif(workDir.FullName, rmPath, pwd, hlmPath)
             );
 
             Console.WriteLine($"Reflexion model csv generated at: {rmPath}");
-            Console.WriteLine($"Reflexion model sarif generated at: {rmSarifPath}");
-            return 0;
+            Console.WriteLine(
+                $"Reflexion model sarif generated at: {rmSarifOutcome.SarifFilePath}"
+            );
+            return rmSarifOutcome.ReportCount is 0 ? 0 : 1;
         }
         catch (Exception ex)
         {

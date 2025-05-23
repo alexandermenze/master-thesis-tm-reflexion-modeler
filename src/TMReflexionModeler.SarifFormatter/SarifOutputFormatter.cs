@@ -20,7 +20,7 @@ public static class SarifOutputFormatter
         WriteIndented = true,
     };
 
-    public static async Task<string> ConvertToSarif(
+    public static async Task<SarifFormatOutcome> ConvertToSarif(
         string workDir,
         string inputPath,
         string pwd,
@@ -83,7 +83,9 @@ public static class SarifOutputFormatter
         }
 
         var outputPath = Path.Combine(workDir, "reflexion-model.sarif");
-        return await WriteResults(outputPath, results);
+        var sarifFilePath = await WriteResults(outputPath, results);
+
+        return new SarifFormatOutcome(sarifFilePath, results.Count);
     }
 
     private static Dictionary<string, object> CreateLocationEntry(
