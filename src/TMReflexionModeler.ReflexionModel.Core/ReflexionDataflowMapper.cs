@@ -16,39 +16,48 @@ public class ReflexionDataflowMapper
         {
             var name = h.Flow.Name.Trim();
 
-            // Search all SM entities with the same DataflowName and ProcessName as Source / Target
-            // depending on the direction
-            var matches = sm.Where(s =>
-                    s.DataflowName.Equals(name, StringComparison.OrdinalIgnoreCase)
-                    && (
-                        (
-                            s.Direction == DataflowDirection.Push
-                            && s.ProcessName.Equals(
-                                h.Flow.Source.Name,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                        )
-                        || (
-                            s.Direction == DataflowDirection.Pull
-                            && s.ProcessName.Equals(
-                                h.Flow.Target.Name,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                        )
-                    )
-                )
+            var pullMatch = sm.Where(s => s.Direction is DataflowDirection.Pull)
+                .Where(s => s.DataflowName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .Where(s => s.ProcessName == h.Flow.Target.Name)
                 .ToImmutableArray();
 
-            if (matches.Any())
-                convergedSm.UnionWith(matches);
+            var pushMatch = sm.Where(s => s.Direction is DataflowDirection.Push)
+                .Where(s => s.DataflowName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .Where(s => s.ProcessName == h.Flow.Source.Name)
+                .ToImmutableArray();
 
-            var category = matches.Any()
-                ? ReflexionCategory.Convergence
-                : ReflexionCategory.Absence;
+            ImmutableArray<SmEntity> smMatches = [];
 
-            var details = matches.Any() ? ImmutableArray<string>.Empty : ["Present in HLM only"];
+            if (h.Flow.Source.Type is "Process" && h.Flow.Target.Type is "Process")
+            {
+                if (pullMatch.IsEmpty is false && pushMatch.IsEmpty is false)
+                    // Convergence
+                    smMatches = [.. pushMatch, .. pullMatch];
+            }
+            else if (h.Flow.Source.Type is "Process")
+            {
+                if (pushMatch.IsEmpty is false)
+                    // Convergence
+                    smMatches = [.. pushMatch];
+            }
+            else if (h.Flow.Target.Type is "Process")
+            {
+                if (pullMatch.IsEmpty is false)
+                    // Convergence
+                    smMatches = [.. pullMatch];
+            }
+
+            convergedSm.UnionWith(smMatches);
+
+            var details = smMatches.IsEmpty
+                ? ["Present in HLM only"]
+                : ImmutableArray<string>.Empty;
 
             var key = $"{h.Flow.Source.Name}->{h.Flow.Name}->{h.Flow.Target.Name}";
+            
+            var category = smMatches.IsEmpty
+                ? ReflexionCategory.Absence
+                : ReflexionCategory.Convergence;
 
             yield return new ReflexionEntry(
                 EntityType: "Dataflow",
@@ -56,11 +65,11 @@ public class ReflexionDataflowMapper
                 Category: category,
                 Details: details,
                 HlmMatches: [h],
-                SmMatches: matches
+                SmMatches: smMatches
             );
         }
 
-        // Divergence: All SM entities that were not converged
+        // Divergence: All Source Model entities that did not converge
         foreach (var s in sm.Except(convergedSm))
         {
             var processName = string.IsNullOrWhiteSpace(s.ProcessName)
